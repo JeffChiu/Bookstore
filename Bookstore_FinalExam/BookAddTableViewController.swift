@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import FirebaseDatabase
 
-class BookAddTableViewControlle: UITableViewController {
+class BookAddTableViewController: UITableViewController {
 
     @IBOutlet weak var name: UITextField!
     @IBOutlet weak var photoUrl: UITextField!
@@ -17,92 +18,73 @@ class BookAddTableViewControlle: UITableViewController {
     @IBOutlet weak var url: UITextField!
     @IBOutlet weak var info: UITextView!
     
-    @IBAction func addBookFinish(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
+    var rootRef: FIRDatabaseReference?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        rootRef = FIRDatabase.database().reference()
+        
+        info.layer.borderWidth = 0.5
+        info.layer.borderColor = UIColor.grayColor().CGColor
+        
+        //dismiss the Keyboard by tapping anywhere on the screen without using touchesBegan
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func hideKeyboard() {
+        view.endEditing(true)
     }
-
-    // MARK: - Table view data source
-
-    /*
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+    
+    //Done 新增書籍
+    @IBAction func addBookFinish(sender: AnyObject) {
+        let book = Book(name: "a", photo: "http://123.com", address: "桃園中壢", tel: "0918979743", url: "http://123.com.tw", info: "好書好書", createdTime: currentTime())
+        //新增DB資料
+        insertFirebaseData(book)
+        
+        //陣列新增資料
+        Book.bookArray.append(book)
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
-
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+    
+    //Cancel 新增取消
+    @IBAction func cancelButton(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
-    */
-
-    /*
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
-
-        // Configure the cell...
-
-        return cell
+    
+    func currentTime() -> String {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.stringFromDate(NSDate())
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    func insertFirebaseData(obj: Book) {
+        let bookRef = rootRef!.child("Books")
+        let newBookRef = bookRef.childByAutoId()
+        print(newBookRef.key)
+        newBookRef.setValue(obj.convertObjectToDictionary())
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
+
+
+//name.delegate = self
+//photoUrl.delegate = self
+//address.delegate = self
+//tel.delegate = self
+//url.delegate = self
+//extension BookAddTableViewController: UITextFieldDelegate {
+//    func textFieldDidEndEditing(textField: UITextField) {
+//        for textField in self.view.subviews where textField is UITextField {
+//            textField.resignFirstResponder()
+//        }
+//    }
+//    func textFieldShouldReturn(textField: UITextField) -> Bool {
+//        for textField in self.view.subviews where textField is UITextField {
+//            textField.resignFirstResponder()
+//        }
+//        return true
+//    }
+//}

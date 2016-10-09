@@ -7,29 +7,70 @@
 //
 
 import UIKit
+import SDWebImage
 
 class BookDetailViewController: UIViewController {
 
+    var book: Book?
+    var isTapPhotoImageView: Bool = false
+    
+    @IBOutlet weak var photoImageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    //@IBOutlet weak var addressLabel: UILabel!
+    
+    @IBOutlet weak var telButton: UIButton!
+    //@IBOutlet weak var urlLabel: UILabel!
+    @IBOutlet weak var infoTextView: UITextView!
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        photoImageView.sd_setImageWithURL(NSURL(string: (book?.photo)!))
+        nameLabel.text = book?.name
+        //addressLabel.text = book?.address
+        //telButton = book?.tel
+        //urlLabel.text = book?.url
+        infoTextView.text = book?.info
         // Do any additional setup after loading the view.
+        
+        //上課範例是用UIView，但UIImageView必須要將user interaction啟用
+        photoImageView.userInteractionEnabled = true
+        //以程式生成tap gesture，賦予imageView在tap後的動作
+        let tapImage = UITapGestureRecognizer(target: self, action: #selector(BookDetailViewController.tapImage))
+        photoImageView!.addGestureRecognizer(tapImage)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func tapImage() {
+        UIView.animateWithDuration(0.5) {
+            self.isTapPhotoImageView = !self.isTapPhotoImageView
+            if self.isTapPhotoImageView == true {
+                self.photoImageView.transform =  CGAffineTransformMakeScale(1.5, 1.5)
+            } else {
+                self.photoImageView.transform =  CGAffineTransformMakeScale(1, 1)
+            }
+        }
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func callBookstore(sender: UIButton) {
+        let _ = UIApplication.sharedApplication().openURL(NSURL(string: "tel://\(book!.tel)")!)
     }
-    */
+    
+    
+    @IBAction func openWeb(sender: AnyObject) {
+        let _ = UIApplication.sharedApplication().openURL(NSURL(string: "\(book!.url)")!)
+    }
+    
+    @IBAction func showLocation(sender: AnyObject) {
+        let vc =  storyboard!.instantiateViewControllerWithIdentifier("MapView") as! MapViewController
+        vc.address = book?.address
+        self.presentViewController(vc, animated: true, completion: nil)
+        
+    }
+    
+    
+
+    
 
 }
