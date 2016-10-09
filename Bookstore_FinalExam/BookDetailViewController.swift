@@ -41,8 +41,9 @@ class BookDetailViewController: UIViewController {
         photoImageView!.addGestureRecognizer(tapImage)
     }
 
-    
+    //動畫效果 - 放大縮小 + 移動位置
     func tapImage() {
+        /*
         UIView.animateWithDuration(0.5) {
             self.isTapPhotoImageView = !self.isTapPhotoImageView
             if self.isTapPhotoImageView == true {
@@ -51,6 +52,20 @@ class BookDetailViewController: UIViewController {
                 self.photoImageView.transform =  CGAffineTransformMakeScale(1, 1)
             }
         }
+        */
+        
+        UIView.animateKeyframesWithDuration(1, delay: 0, options: .CalculationModeLinear, animations: {
+            UIView.addKeyframeWithRelativeStartTime(0, relativeDuration: 0.5, animations: {
+                self.isTapPhotoImageView = !self.isTapPhotoImageView
+                if self.isTapPhotoImageView == true {
+                    self.photoImageView.transform =  CGAffineTransformMakeScale(1.5, 1.5) //放大
+                    self.photoImageView.frame = CGRectOffset(self.photoImageView.frame, 0, 100) //垂直移動
+                } else {
+                    self.photoImageView.transform =  CGAffineTransformMakeScale(1, 1) //縮回原本比例
+                    self.photoImageView.frame = CGRectOffset(self.photoImageView.frame, 0, -100)  //移回原來位置
+                }
+            })
+        }, completion: nil)
     }
     
     @IBAction func callBookstore(sender: UIButton) {

@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--薄剋錸網路書城-->
@@ -22,7 +23,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="156"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZXh-xd-yJp">
+                                        <imageView userInteractionEnabled="NO" contentMode="redraw" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZXh-xd-yJp">
                                             <rect key="frame" x="18" y="11" width="120" height="124"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="120" id="njT-cH-Zi7"/>
@@ -296,6 +297,9 @@
                         <navigationBar key="tableHeaderView" contentMode="scaleToFill" id="ahn-uc-Qly">
                             <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textAttributes key="titleTextAttributes">
+                                <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
+                            </textAttributes>
                             <items>
                                 <navigationItem title="新增書籍資訊" id="Tcj-UL-czM">
                                     <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="DSf-BM-gRw">
@@ -303,11 +307,18 @@
                                             <action selector="cancelButton:" destination="o2X-Wq-weQ" id="F7J-b8-G5f"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem key="rightBarButtonItem" systemItem="done" id="ne3-wf-x8c">
-                                        <connections>
-                                            <action selector="addBookFinish:" destination="o2X-Wq-weQ" id="rpv-Th-0qM"/>
-                                        </connections>
-                                    </barButtonItem>
+                                    <rightBarButtonItems>
+                                        <barButtonItem systemItem="done" id="ne3-wf-x8c">
+                                            <connections>
+                                                <action selector="addBookFinish:" destination="o2X-Wq-weQ" id="rpv-Th-0qM"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem title="範例" id="JXH-CZ-Hor">
+                                            <connections>
+                                                <action selector="addExample:" destination="o2X-Wq-weQ" id="DxF-pg-3bZ"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </rightBarButtonItems>
                                 </navigationItem>
                             </items>
                         </navigationBar>
@@ -479,7 +490,9 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="address" destination="oQr-pK-jLX" id="PQP-qZ-B89"/>
                         <outlet property="info" destination="hAZ-kY-oU3" id="b1s-rc-9X3"/>
